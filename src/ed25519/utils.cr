@@ -24,10 +24,10 @@ module Ed25519::Utils
   # /
   def hash_to_private_scalar(hash : Hex) : BigInt
     hash = ensure_bytes(hash)
-    raise Exception.new("Expected 40-1024 bytes of private key as per FIPS 186") if hash.size < 40 || hash.size > 1024
+    raise VerifyError.new("Expected 40-1024 bytes of private key as per FIPS 186") if hash.size < 40 || hash.size > 1024
     num = Ed25519.mod(bytes_to_number_le(hash), Curve::L)
     # This should never happen
-    raise Exception.new("Invalid private key") if num === Zero || num === One
+    raise VerifyError.new("Invalid private key") if num === Zero || num === One
     num
   end
 

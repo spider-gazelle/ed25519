@@ -8,7 +8,7 @@ module Ed25519::Curve25519
     pu = Ed25519.montgomery_ladder(u, p)
     # The result was not contributory
     # https://cr.yp.to/ecdh.html#validate
-    raise Exception.new("Invalid private or public key received") if pu == Zero
+    raise VerifyError.new("Invalid private or public key received") if pu == Zero
     Ed25519.encode_u_coordinate(pu)
   end
 

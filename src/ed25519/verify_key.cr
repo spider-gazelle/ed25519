@@ -16,6 +16,6 @@ class Ed25519::VerifyKey
   end
 
   def verify!(signature : Bytes, message : Bytes | String)
-    raise "signature verification failed!" unless verify(signature, message)
+    raise VerifyError.new("signature verification failed!") unless verify(signature, message)
   end
 end

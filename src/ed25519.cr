@@ -9,6 +9,9 @@ module Ed25519
     VERSION = {{ `shards version "#{__DIR__}"`.chomp.stringify.downcase }}
   {% end %}
 
+  class VerifyError < Exception
+  end
+
   alias Hex = Bytes | String
   alias PrivKey = Hex | BigInt
   alias PubKey = Hex | Point
@@ -243,7 +246,7 @@ module Ed25519
               hex_to_bytes(hex)
             end
     # bytes = hex instanceof Bytes ? Bytes.from(hex) : hex_to_bytes(hex)
-    raise Exception.new("Expected #{expected_length} bytes") if expected_length && bytes.size != expected_length
+    raise VerifyError.new("Expected #{expected_length} bytes, got #{bytes.size}") if expected_length && bytes.size != expected_length
 
     bytes
   end
@@ -306,7 +309,7 @@ module Ed25519
     #   typeof key === "BigInt" || typeof key === "number"
     #     ? number_to_32_bytes_be(Ed25519.normalize_scalar(key, MAX_256B))
     #     : ensure_bytes(key)
-    raise Exception.new("Expected 32 bytes. Key is only #{key_bytes.size} bytes") unless key_bytes.size == 32
+    raise VerifyError.new("Expected 32 bytes. Key is only #{key_bytes.size} bytes") unless key_bytes.size == 32
     # hash to produce 64 bytes
     hashed = Utils.sha512(key_bytes)
     # First 32 bytes of 64b uniformingly random input are taken,

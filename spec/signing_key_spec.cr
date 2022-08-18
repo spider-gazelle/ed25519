@@ -15,9 +15,16 @@ describe Ed25519::SigningKey do
     io.write signature
     io.write_byte 0x45_u8
     bad_signature = io.to_slice
+    expect_raises(Ed25519::VerifyError, "Expected 64 bytes, got 65") { verify_key.verify(bad_signature, message) }
 
-    # TODO:: fix this to be a scoped error
-    expect_raises(Exception) { verify_key.verify(bad_signature, message) }
+    io = IO::Memory.new
+    io.write signature
+    bad_signature = io.to_slice
+    bad_signature[2] = 0x00_u8
+    expect_raises(Ed25519::VerifyError, "Invalid Point y coordinate") { verify_key.verify(bad_signature, message) }
+  end
+
+  it "verifies messages with bad signatures" do
     verify_key.verify(signature, "wrong message").should be_false
   end
 end

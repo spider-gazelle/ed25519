@@ -131,7 +131,7 @@ class Ed25519::ExtendedPoint
       affine_point = Point::BASE
     end
     w = affine_point.try(&._window_size) || 1
-    raise ArgumentError.new("Point#w_naf: Invalid precomputation window, must be power of 2") if 256 % w != 0
+    raise VerifyError.new("Point#w_naf: Invalid precomputation window, must be power of 2") if 256 % w != 0
 
     precomputes : Array(ExtendedPoint) = if affine_point && (points = Ed25519::PointPrecomputes[affine_point]?)
       points
@@ -239,7 +239,7 @@ class Ed25519::ExtendedPoint
     ax = Ed25519.mod(x * inv_z)
     ay = Ed25519.mod(y * inv_z)
     zz = Ed25519.mod(z * inv_z)
-    raise Exception.new("inv_z was invalid") if zz != One
+    raise VerifyError.new("inv_z was invalid") if zz != One
     Point.new(ax, ay)
   end
 end

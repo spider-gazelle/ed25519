@@ -66,7 +66,7 @@ class Ed25519::RistrettoPoint
     s = bytes_255_to_number_le(hex)
     # 1. Check that s_bytes is the canonical encoding of a field element, or else abort.
     # 3. Check that s is non-negative, or else abort
-    raise Exception.new(emsg) if !equal_bytes(number_to_32_bytes_le(s), hex) || ed_is_negative(s)
+    raise VerifyError.new(emsg) if !equal_bytes(number_to_32_bytes_le(s), hex) || ed_is_negative(s)
     s2 = Ed25519.mod(s * s)
     u1 = Ed25519.mod(One + Curve::A * s2) # 4 (a is -1)
     u2 = Ed25519.mod(One - Curve::A * s2) # 5
@@ -81,7 +81,7 @@ class Ed25519::RistrettoPoint
     x = Ed25519.mod(-x) if ed_is_negative(x) # 10
     y = Ed25519.mod(u1 * dy)                 # 11
     t = Ed25519.mod(x * y)                   # 12
-    raise Exception.new(emsg) if !pair.is_valid || ed_is_negative(t) || y == Zero
+    raise VerifyError.new(emsg) if !pair.is_valid || ed_is_negative(t) || y == Zero
     RistrettoPoint.new(ExtendedPoint.new(x, y, One, t))
   end
 

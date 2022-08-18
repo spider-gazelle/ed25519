@@ -51,8 +51,8 @@ module Ed25519
       normed[31] = hex_bytes[31] & ~0x80
       y = Ed25519.bytes_to_number_le(normed)
 
-      raise Exception.new("Expected 0 < hex < P") if strict && y >= Curve::P
-      raise Exception.new("Expected 0 < hex < 2**256") if !strict && y >= MAX_256B
+      raise VerifyError.new("Expected 0 < hex < P") if strict && y >= Curve::P
+      raise VerifyError.new("Expected 0 < hex < 2**256") if !strict && y >= MAX_256B
 
       # 2.  To recover the x-coordinate, the curve equation implies
       # x² = (y² - 1) / (d y² + 1) (mod p).  The denominator is always
@@ -63,7 +63,7 @@ module Ed25519
       pair = Ed25519.uv_ratio(u, v)
       is_valid = pair[:is_valid]
       x = pair[:value]
-      raise Exception.new("Point.from_hex: invalid y coordinate") unless is_valid
+      raise VerifyError.new("Invalid Point y coordinate") unless is_valid
 
       # 4.  Finally, use the x_0 bit to select the right square root.  If
       # x = 0, and x_0 = 1, decoding fails.  Otherwise, if x_0 != x mod
