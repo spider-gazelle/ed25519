@@ -5,7 +5,7 @@ class Ed25519::ExtendedPoint
   BASE = ExtendedPoint.new(Curve::Gx, Curve::Gy, One, Ed25519.mod(Curve::Gx * Curve::Gy))
   ZERO = ExtendedPoint.new(Zero, One, One, Zero)
 
-  def self.fromAffine(p : Point) : ExtendedPoint
+  def self.from_affine(p : Point) : ExtendedPoint
     if p == Point::ZERO
       ExtendedPoint::ZERO
     else
@@ -16,13 +16,13 @@ class Ed25519::ExtendedPoint
   # Takes a bunch of Jacobian Points but executes only one
   # invert on all of them. invert is very slow operation,
   # so this improves performance massively.
-  def self.toAffineBatch(points : Array(ExtendedPoint)) : Array(Point)
-    toInv = Ed25519.invertBatch(points.map(&.z))
-    points.map_with_index { |p, i| p.toAffine(toInv[i]) }
+  def self.to_affine_batch(points : Array(ExtendedPoint)) : Array(Point)
+    to_inv = Ed25519.invert_batch(points.map(&.z))
+    points.map_with_index { |p, i| p.to_affine(to_inv[i]) }
   end
 
-  def self.normalizeZ(points : Array(ExtendedPoint)) : Array(ExtendedPoint)
-    self.toAffineBatch(points).map { |p| fromAffine(p) }
+  def self.normalize_z(points : Array(ExtendedPoint)) : Array(ExtendedPoint)
+    self.to_affine_batch(points).map { |p| from_affine(p) }
   end
 
   property x : BigInt
@@ -41,7 +41,7 @@ class Ed25519::ExtendedPoint
     x2z1 = Ed25519.mod(x2 * z1)
     y1z2 = Ed25519.mod(y1 * z2)
     y2z1 = Ed25519.mod(y2 * z1)
-    return x1z2 === x2z1 && y1z2 === y2z1
+    x1z2 === x2z1 && y1z2 === y2z1
   end
 
   def ==(other : ExtendedPoint) : Bool
@@ -50,7 +50,7 @@ class Ed25519::ExtendedPoint
 
   # Inverses point to one corresponding to (x, -y) in Affine coordinates.
   def negate : ExtendedPoint
-    return ExtendedPoint.new(Ed25519.mod(-@x), @y, @z, Ed25519.mod(-@t))
+    ExtendedPoint.new(Ed25519.mod(-@x), @y, @z, Ed25519.mod(-@t))
   end
 
   # Fast algo for doubling Extended Point when curve's a=-1.
@@ -70,7 +70,7 @@ class Ed25519::ExtendedPoint
     y3 = Ed25519.mod(g * h)
     t3 = Ed25519.mod(e * h)
     z3 = Ed25519.mod(f * g)
-    return ExtendedPoint.new(x3, y3, z3, t3)
+    ExtendedPoint.new(x3, y3, z3, t3)
   end
 
   # Fast algo for adding 2 Extended Points when curve's a=-1.
@@ -101,10 +101,10 @@ class Ed25519::ExtendedPoint
   end
 
   def subtract(other : ExtendedPoint) : ExtendedPoint
-    return self.add(other.negate)
+    self.add(other.negate)
   end
 
-  private def precomputeWindow(w : Int) : Array(ExtendedPoint)
+  private def precompute_window(w : Int) : Array(ExtendedPoint)
     windows = 1 + 256 / w
     points : Array(ExtendedPoint) = [] of ExtendedPoint
     p : ExtendedPoint = self
@@ -122,23 +122,24 @@ class Ed25519::ExtendedPoint
       p = base.double
       window += 1
     end
-    return points
+    points
   end
 
-  private def wNAF(n : BigInt, affinePoint : Point? = nil) : ExtendedPoint
-    if affinePoint.nil? && self == ExtendedPoint::BASE
-      affinePoint = Point::BASE
+  # ameba:disable Metrics/CyclomaticComplexity
+  private def w_naf(n : BigInt, affine_point : Point? = nil) : ExtendedPoint
+    if affine_point.nil? && self == ExtendedPoint::BASE
+      affine_point = Point::BASE
     end
-    w = affinePoint.try(&._WINDOW_SIZE) || 1
-    raise ArgumentError.new("Point#wNAF: Invalid precomputation window, must be power of 2") if 256 % w != 0
+    w = affine_point.try(&._window_size) || 1
+    raise ArgumentError.new("Point#w_naf: Invalid precomputation window, must be power of 2") if 256 % w != 0
 
-    precomputes : Array(ExtendedPoint) = if affinePoint && (points = Ed25519::PointPrecomputes[affinePoint]?)
+    precomputes : Array(ExtendedPoint) = if affine_point && (points = Ed25519::PointPrecomputes[affine_point]?)
       points
     else
-      points = precomputeWindow(w)
-      if affinePoint && w != 1
-        points = ExtendedPoint.normalizeZ(points)
-        Ed25519::PointPrecomputes[affinePoint] = points
+      points = precompute_window(w)
+      if affine_point && w != 1
+        points = ExtendedPoint.normalize_z(points)
+        Ed25519::PointPrecomputes[affine_point] = points
       end
       points
     end
@@ -147,24 +148,24 @@ class Ed25519::ExtendedPoint
     f = ExtendedPoint::ZERO
 
     windows = 1 + 256 / w
-    windowSize = 2 ** (w - 1)
+    window_size = 2 ** (w - 1)
     mask = BigInt.new(2 ** w - 1) # Create mask with W ones: 0b1111 for W=4 etc.
-    maxNumber = 2 ** w
-    shiftBy = BigInt.new(w)
+    max_number = 2 ** w
+    shift_by = BigInt.new(w)
 
     window = 0
     while window < windows # for (window = 0 window < windows window++)
-      offset = window * windowSize
+      offset = window * window_size
       # Extract W bits.
       wbits = n & mask
 
       # Shift number by W bits.
-      n >>= shiftBy
+      n >>= shift_by
 
       # If the bits are bigger than max size, we'll split those.
       # +224 => 256 - 32
-      if wbits > windowSize
-        wbits -= maxNumber
+      if wbits > window_size
+        wbits -= max_number
         n += One
       end
 
@@ -185,22 +186,22 @@ class Ed25519::ExtendedPoint
       end
       window += 1
     end
-    ExtendedPoint.normalizeZ([p, f])[0]
+    ExtendedPoint.normalize_z([p, f])[0]
   end
 
   # Constant time multiplication.
-  # Uses wNAF method. Windowed method may be 10% faster,
+  # Uses w_naf method. Windowed method may be 10% faster,
   # but takes 2x longer to generate and consumes 2x memory.
-  def multiply(scalar : Int, affinePoint : Point?) : ExtendedPoint
-    wNAF(Ed25519.normalizeScalar(scalar, Curve::L), affinePoint)
+  def multiply(scalar : Int, affine_point : Point?) : ExtendedPoint
+    w_naf(Ed25519.normalize_scalar(scalar, Curve::L), affine_point)
   end
 
   # Non-constant-time multiplication. Uses double-and-add algorithm.
   # It's faster, but should only be used when you don't care about
   # an exposed private key e.g. sig verification.
   # Allows scalar bigger than curve order, but less than 2^256
-  def multiplyUnsafe(scalar : Int) : ExtendedPoint
-    n = Ed25519.normalizeScalar(scalar, Curve::L, false)
+  def multiply_unsafe(scalar : Int) : ExtendedPoint
+    n = Ed25519.normalize_scalar(scalar, Curve::L, false)
     g = ExtendedPoint::BASE
     p0 = ExtendedPoint::ZERO
     if n == Zero
@@ -208,7 +209,7 @@ class Ed25519::ExtendedPoint
     elsif self.equals(p0) || n === One
       self
     elsif self.equals(g)
-      wNAF(n)
+      w_naf(n)
     else
       p = p0
       d : ExtendedPoint = self
@@ -223,22 +224,22 @@ class Ed25519::ExtendedPoint
     end
   end
 
-  def isSmallOrder : Bool
-    self.multiplyUnsafe(Curve::H).equals(ExtendedPoint::ZERO)
+  def is_small_order : Bool
+    self.multiply_unsafe(Curve::H).equals(ExtendedPoint::ZERO)
   end
 
-  def isTorsionFree : Bool
-    self.multiplyUnsafe(Curve::L).equals(ExtendedPoint::ZERO)
+  def is_torsion_free : Bool
+    self.multiply_unsafe(Curve::L).equals(ExtendedPoint::ZERO)
   end
 
   # Converts Extended point to default (x, y) coordinates.
-  # Can accept precomputed Z^-1 - for example, from invertBatch.
-  def toAffine(invZ : BigInt = Ed25519.invert(@z)) : Point
+  # Can accept precomputed Z^-1 - for example, from invert_batch.
+  def to_affine(inv_z : BigInt = Ed25519.invert(@z)) : Point
     x, y, z = @x, @y, @z
-    ax = Ed25519.mod(x * invZ)
-    ay = Ed25519.mod(y * invZ)
-    zz = Ed25519.mod(z * invZ)
-    raise Exception.new("invZ was invalid") if zz != One
+    ax = Ed25519.mod(x * inv_z)
+    ay = Ed25519.mod(y * inv_z)
+    zz = Ed25519.mod(z * inv_z)
+    raise Exception.new("inv_z was invalid") if zz != One
     Point.new(ax, ay)
   end
 end

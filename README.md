@@ -66,8 +66,8 @@ Keys can be serialized as 32-byte binary strings as follows:
 
 ```crystal
 
-signature_key_bytes = signing_key.key_bytes
-verify_key_bytes = verify_key.key_bytes
+signature_key_bytes = signing_key.key_bytes.hexstring
+verify_key_bytes = verify_key.key_bytes.hexstring
 
 ```
 
@@ -75,7 +75,12 @@ The binary serialization can be passed directly into the constructor for a given
 
 ```crystal
 
-signing_key = Ed25519::SigningKey.new(signature_key_bytes)
-verify_key  = Ed25519::VerifyKey.new(verify_key_bytes)
+signing_key = Ed25519::SigningKey.new(signature_key_bytes.hexbytes)
+verify_key  = Ed25519::VerifyKey.new(verify_key_bytes.hexbytes)
 
 ```
+
+## Credit
+
+The original crystal port was done by [davidkellis](https://github.com/davidkellis/noble-ed25519-cr)
+based on the javascript implementation by [paulmillr](https://github.com/paulmillr/noble-ed25519)

@@ -22,23 +22,23 @@ module Ed25519::Utils
   # @param hash hash output from sha512, or a similar function
   # @returns valid private scalar
   # /
-  def hashToPrivateScalar(hash : Hex) : BigInt
-    hash = ensureBytes(hash)
+  def hash_to_private_scalar(hash : Hex) : BigInt
+    hash = ensure_bytes(hash)
     raise Exception.new("Expected 40-1024 bytes of private key as per FIPS 186") if hash.size < 40 || hash.size > 1024
-    num = Ed25519.mod(bytesToNumberLE(hash), Curve::L)
+    num = Ed25519.mod(bytes_to_number_le(hash), Curve::L)
     # This should never happen
     raise Exception.new("Invalid private key") if num === Zero || num === One
     num
   end
 
-  def randomBytes(bytesLength : Int = 32) : Bytes
-    Random::Secure.random_bytes(bytesLength)
+  def random_bytes(bytes_length : Int = 32) : Bytes
+    Random::Secure.random_bytes(bytes_length)
   end
 
   # Note: ed25519 private keys are uniform 32-bit strings. We do not need
-  # to check for modulo bias like we do in noble-secp256k1 randomPrivateKey()
-  def randomPrivateKey : Bytes
-    randomBytes(32)
+  # to check for modulo bias like we do in noble-secp256k1 random_private_key()
+  def random_private_key : Bytes
+    random_bytes(32)
   end
 
   def sha512(message : Bytes) : Bytes
@@ -46,14 +46,14 @@ module Ed25519::Utils
   end
 
   #
-  # We're doing scalar multiplication (used in getPublicKey etc) with precomputed BASE_POINT
-  # values. This slows down first getPublicKey() by milliseconds (see Speed section),
-  # but allows to speed-up subsequent getPublicKey() calls up to 20x.
-  # @param windowSize 2, 4, 8, 16
+  # We're doing scalar multiplication (used in get_public_key etc) with precomputed BASE_POINT
+  # values. This slows down first get_public_key() by milliseconds (see Speed section),
+  # but allows to speed-up subsequent get_public_key() calls up to 20x.
+  # @param window_size 2, 4, 8, 16
   #
-  def precompute(windowSize = 8, point = Point::BASE) : Point
+  def precompute(window_size = 8, point = Point::BASE) : Point
     cached = point.equals(Point::BASE) ? point : Point.new(point.x, point.y)
-    cached._setWindowSize(windowSize)
+    cached._set_window_size(window_size)
     cached.multiply(Ed25519::Two)
     cached
   end

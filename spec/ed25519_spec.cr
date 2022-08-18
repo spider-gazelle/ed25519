@@ -15,19 +15,19 @@ describe Ed25519 do
     it "converts bytes to hex" do
       message = MESSAGE.hexstring
       message = "0#{message}" if message.size.odd?
-      Ed25519.bytesToHex(MESSAGE).should eq message
+      Ed25519.bytes_to_hex(MESSAGE).should eq message
     end
 
     it "converts hex string to bytes" do
-      Ed25519.hexToBytes("a665a45920422f9d417e4867ef").should eq Bytes[166, 101, 164, 89, 32, 66, 47, 157, 65, 126, 72, 103, 239]
+      Ed25519.hex_to_bytes("a665a45920422f9d417e4867ef").should eq Bytes[166, 101, 164, 89, 32, 66, 47, 157, 65, 126, 72, 103, 239]
     end
 
     it "converts BigInt to 32 byte big endian byte sequence" do
-      Ed25519.numberTo32BytesBE("27742317777372353535851937790883648493".to_big_i).should eq Bytes[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 222, 249, 222, 162, 247, 156, 214, 88, 18, 99, 26, 92, 245, 211, 237]
+      Ed25519.number_to_32_bytes_be("27742317777372353535851937790883648493".to_big_i).should eq Bytes[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 222, 249, 222, 162, 247, 156, 214, 88, 18, 99, 26, 92, 245, 211, 237]
     end
 
     it "converts BigInt to 32 byte little endian byte sequence" do
-      Ed25519.numberTo32BytesLE("27742317777372353535851937790883648493".to_big_i).should eq Bytes[237, 211, 245, 92, 26, 99, 18, 88, 214, 156, 247, 162, 222, 249, 222, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      Ed25519.number_to_32_bytes_le("27742317777372353535851937790883648493".to_big_i).should eq Bytes[237, 211, 245, 92, 26, 99, 18, 88, 214, 156, 247, 162, 222, 249, 222, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     end
 
     it "should compute mod CURVE::P" do
@@ -49,7 +49,7 @@ describe Ed25519 do
     end
 
     it "inverts batch of numbers" do
-      Ed25519.invertBatch([1.to_big_i, 2.to_big_i, 4.to_big_i], 21.to_big_i).should eq [1, 11, 16]
+      Ed25519.invert_batch([1.to_big_i, 2.to_big_i, 4.to_big_i], 21.to_big_i).should eq [1, 11, 16]
     end
 
     it "computes pow2" do
@@ -61,48 +61,48 @@ describe Ed25519 do
       Ed25519.pow_2_252_3(num).should eq({"2007243726052975970339153529261035180203912631570139636502564328030873469281".to_big_i, "52864636761835200299101173910121901953771021227763758333640898492888052065337".to_big_i})
     end
 
-    it "computes uvRatio" do
-      Ed25519.uvRatio("27742317777372353535851937790883648493".to_big_i, "198769872436918376213501958703920938752386".to_big_i).should eq({isValid: false, value: "33163897333317007419663107070771352354920589001556313524914073390963493288394".to_big_i})
-      Ed25519.uvRatio("27213961650279187126354748160205335807523987566359071609304029628365279727324".to_big_i, "27787647173221291125650158180742401703679305406138857275987853644060377373788".to_big_i).should eq({isValid: true, value: "48188234626907081121575294094579211864993546086526705071087496785340204265936".to_big_i})
-      Ed25519.uvRatio("15895194189553809033342975284295231227934920276228265631745976312367022000845".to_big_i, "5675693303730766140364302987343482354541631409263322915752403576144669435631".to_big_i).should eq({isValid: true, value: "8468835981647797823304191469329601862258854567415794156442409693316391552550".to_big_i})
-      Ed25519.uvRatio("31031949121830833172846373566557914507900898782493197785413798813063487260682".to_big_i, "53461621953025207154279471862340665811776665241326266554161842641651361229057".to_big_i).should eq({isValid: true, value: "31382109926263054107926052269483937512218657024427845491771401746030552685088".to_big_i})
-      Ed25519.uvRatio("9550856173422490585348547942157906158796634661038428454175780779123679856477".to_big_i, "46237204893508074780731288230537916342552458411514130364996205109757609549860".to_big_i).should eq({isValid: true, value: "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i})
+    it "computes uv_ratio" do
+      Ed25519.uv_ratio("27742317777372353535851937790883648493".to_big_i, "198769872436918376213501958703920938752386".to_big_i).should eq({is_valid: false, value: "33163897333317007419663107070771352354920589001556313524914073390963493288394".to_big_i})
+      Ed25519.uv_ratio("27213961650279187126354748160205335807523987566359071609304029628365279727324".to_big_i, "27787647173221291125650158180742401703679305406138857275987853644060377373788".to_big_i).should eq({is_valid: true, value: "48188234626907081121575294094579211864993546086526705071087496785340204265936".to_big_i})
+      Ed25519.uv_ratio("15895194189553809033342975284295231227934920276228265631745976312367022000845".to_big_i, "5675693303730766140364302987343482354541631409263322915752403576144669435631".to_big_i).should eq({is_valid: true, value: "8468835981647797823304191469329601862258854567415794156442409693316391552550".to_big_i})
+      Ed25519.uv_ratio("31031949121830833172846373566557914507900898782493197785413798813063487260682".to_big_i, "53461621953025207154279471862340665811776665241326266554161842641651361229057".to_big_i).should eq({is_valid: true, value: "31382109926263054107926052269483937512218657024427845491771401746030552685088".to_big_i})
+      Ed25519.uv_ratio("9550856173422490585348547942157906158796634661038428454175780779123679856477".to_big_i, "46237204893508074780731288230537916342552458411514130364996205109757609549860".to_big_i).should eq({is_valid: true, value: "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i})
     end
 
-    it "computes sha512ModqLE" do
-      Ed25519.sha512ModqLE(Bytes[12, 45]).should eq "1496564937568173540830439562996302377934504166425150197954509365085523985106".to_big_i
+    it "computes sha512_modq_le" do
+      Ed25519.sha512_modq_le(Bytes[12, 45]).should eq "1496564937568173540830439562996302377934504166425150197954509365085523985106".to_big_i
     end
 
-    it "computes adjustBytes25519" do
-      Ed25519.adjustBytes25519(Bytes[12, 45, 29, 27, 245, 25, 1, 0, 64, 187, 12, 45, 29, 27, 245, 25, 12, 45, 29, 27, 245, 25, 1, 0, 64, 187, 12, 45, 29, 27, 245, 25]).should eq Bytes[8, 45, 29, 27, 245, 25, 1, 0, 64, 187, 12, 45, 29, 27, 245, 25, 12, 45, 29, 27, 245, 25, 1, 0, 64, 187, 12, 45, 29, 27, 245, 89]
+    it "computes adjust_bytes_25519" do
+      Ed25519.adjust_bytes_25519(Bytes[12, 45, 29, 27, 245, 25, 1, 0, 64, 187, 12, 45, 29, 27, 245, 25, 12, 45, 29, 27, 245, 25, 1, 0, 64, 187, 12, 45, 29, 27, 245, 25]).should eq Bytes[8, 45, 29, 27, 245, 25, 1, 0, 64, 187, 12, 45, 29, 27, 245, 25, 12, 45, 29, 27, 245, 25, 1, 0, 64, 187, 12, 45, 29, 27, 245, 89]
     end
 
-    it "computes decodeScalar25519" do
-      Ed25519.decodeScalar25519("a665a45920422f9d417e4867ef920422a665a45920422f9d417e4867ef920422").should eq "44334740658690092479172493905085013329736094120839359355401836069192844207520".to_big_i
+    it "computes decode_scalar_25519" do
+      Ed25519.decode_scalar_25519("a665a45920422f9d417e4867ef920422a665a45920422f9d417e4867ef920422").should eq "44334740658690092479172493905085013329736094120839359355401836069192844207520".to_big_i
     end
   end
 
   it "should not accept >32byte private keys" do
-    invalidPriv = BigInt.new("100000000000000000000000000000000000009000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000090000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800073278156000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+    invalid_priv = BigInt.new("100000000000000000000000000000000000009000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000090000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800073278156000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
     expect_raises(Exception) do
-      Ed25519.getPublicKey(invalidPriv)
+      Ed25519.get_public_key(invalid_priv)
     end
   end
 
   describe "key primitives" do
-    it "getExtendedPublicKey" do
-      head, prefix, scalar, point, pointBytes = Ed25519.getExtendedPublicKey(PRIVATE_KEY)
+    it "get_extended_public_key" do
+      head, prefix, scalar, point, point_bytes = Ed25519.get_extended_public_key(PRIVATE_KEY)
       head.should eq Bytes[128, 22, 244, 174, 242, 184, 243, 242, 167, 158, 97, 38, 31, 78, 189, 6, 100, 112, 241, 78, 51, 33, 205, 89, 118, 48, 7, 182, 0, 98, 236, 109]
       prefix.should eq Bytes[79, 166, 233, 152, 248, 238, 22, 118, 193, 139, 243, 78, 115, 113, 204, 49, 15, 197, 185, 93, 246, 58, 130, 240, 67, 120, 235, 20, 105, 5, 86, 216]
       scalar.should eq "6297719329181941818464811366542144281012346280162365974104312725502870757106".to_big_i
       point.x.should eq "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
       point.y.should eq "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
-      pointBytes.should eq Bytes[217, 165, 208, 247, 73, 44, 4, 181, 237, 154, 236, 245, 8, 2, 146, 13, 63, 34, 199, 5, 70, 70, 14, 49, 10, 90, 212, 68, 53, 125, 223, 115]
+      point_bytes.should eq Bytes[217, 165, 208, 247, 73, 44, 4, 181, 237, 154, 236, 245, 8, 2, 146, 13, 63, 34, 199, 5, 70, 70, 14, 49, 10, 90, 212, 68, 53, 125, 223, 115]
     end
 
-    it "getPublicKey" do
-      pointBytes = Ed25519.getPublicKey(PRIVATE_KEY)
-      pointBytes.should eq Bytes[217, 165, 208, 247, 73, 44, 4, 181, 237, 154, 236, 245, 8, 2, 146, 13, 63, 34, 199, 5, 70, 70, 14, 49, 10, 90, 212, 68, 53, 125, 223, 115]
+    it "get_public_key" do
+      point_bytes = Ed25519.get_public_key(PRIVATE_KEY)
+      point_bytes.should eq Bytes[217, 165, 208, 247, 73, 44, 4, 181, 237, 154, 236, 245, 8, 2, 146, 13, 63, 34, 199, 5, 70, 70, 14, 49, 10, 90, 212, 68, 53, 125, 223, 115]
     end
   end
 
@@ -111,30 +111,30 @@ describe Ed25519 do
       x = "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
       y = "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
       p = Ed25519::Point.new(x, y)
-      p.toRawBytes.should eq Bytes[217, 165, 208, 247, 73, 44, 4, 181, 237, 154, 236, 245, 8, 2, 146, 13, 63, 34, 199, 5, 70, 70, 14, 49, 10, 90, 212, 68, 53, 125, 223, 115]
-      p.toHex.should eq "d9a5d0f7492c04b5ed9aecf50802920d3f22c70546460e310a5ad444357ddf73"
-      p.toX25519.should eq Bytes[226, 167, 236, 215, 164, 98, 114, 37, 42, 31, 98, 136, 35, 58, 104, 117, 13, 130, 161, 52, 114, 220, 82, 42, 93, 132, 35, 128, 147, 50, 47, 79]
+      p.to_raw_bytes.should eq Bytes[217, 165, 208, 247, 73, 44, 4, 181, 237, 154, 236, 245, 8, 2, 146, 13, 63, 34, 199, 5, 70, 70, 14, 49, 10, 90, 212, 68, 53, 125, 223, 115]
+      p.to_hex.should eq "d9a5d0f7492c04b5ed9aecf50802920d3f22c70546460e310a5ad444357ddf73"
+      p.to_x25519.should eq Bytes[226, 167, 236, 215, 164, 98, 114, 37, 42, 31, 98, 136, 35, 58, 104, 117, 13, 130, 161, 52, 114, 220, 82, 42, 93, 132, 35, 128, 147, 50, 47, 79]
     end
 
     it "builds from a hex string" do
       x = "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
       y = "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
       p = Ed25519::Point.new(x, y)
-      hex = p.toHex
+      hex = p.to_hex
 
-      p2 = Ed25519::Point.fromHex(hex)
+      p2 = Ed25519::Point.from_hex(hex)
 
       p2.should eq p
 
-      p = Ed25519::Point.fromHex(Bytes[126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75])
+      p = Ed25519::Point.from_hex(Bytes[126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75, 126, 75])
       p.x.should eq "48188234626907081121575294094579211864993546086526705071087496785340204265936".to_big_i
       p.y.should eq "34146607409786721488608115606590409814180143795653765783574536790065295543166".to_big_i
 
-      p = Ed25519::Point.fromHex(Bytes[1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4])
+      p = Ed25519::Point.from_hex(Bytes[1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4])
       p.x.should eq "8468835981647797823304191469329601862258854567415794156442409693316391552550".to_big_i
       p.y.should eq "1814565766402527470104038909434809373945086533855861134940556411704373871105".to_big_i
 
-      p = Ed25519::Point.fromHex(Bytes[126, 53, 132, 137, 134, 7, 9, 5, 101, 248, 41, 96, 94, 100, 244, 241, 68, 100, 234, 120, 1, 194, 16, 148, 150, 227, 147, 254, 0, 189, 23, 213])
+      p = Ed25519::Point.from_hex(Bytes[126, 53, 132, 137, 134, 7, 9, 5, 101, 248, 41, 96, 94, 100, 244, 241, 68, 100, 234, 120, 1, 194, 16, 148, 150, 227, 147, 254, 0, 189, 23, 213])
       p.y.should eq "38488534068937249364295735992136415884264322982189244974287126545192511092094".to_big_i
       p.x.should eq "26513934692395043603859440234860016414416335308392436527957390257926012134861".to_big_i
     end
@@ -145,7 +145,7 @@ describe Ed25519 do
       x = "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
       y = "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
       p = Ed25519::Point.new(x, y)
-      ep = Ed25519::ExtendedPoint.fromAffine(p)
+      ep = Ed25519::ExtendedPoint.from_affine(p)
       ep.x.should eq x
       ep.y.should eq y
       ep.z.should eq 1.to_big_i
@@ -156,7 +156,7 @@ describe Ed25519 do
       x = "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
       y = "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
       p = Ed25519::Point.new(x, y)
-      ep = Ed25519::ExtendedPoint.fromAffine(p)
+      ep = Ed25519::ExtendedPoint.from_affine(p)
       ep.x.should eq x
       ep.y.should eq y
       ep.z.should eq 1.to_big_i
@@ -167,7 +167,7 @@ describe Ed25519 do
       x = "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
       y = "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
       p = Ed25519::Point.new(x, y)
-      ep = Ed25519::ExtendedPoint.fromAffine(p).negate
+      ep = Ed25519::ExtendedPoint.from_affine(p).negate
       ep.x.should eq "44232395172115499992234533227905983736041326978296832891262584305088084144013".to_big_i
       ep.y.should eq "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
       ep.z.should eq 1.to_big_i
@@ -178,7 +178,7 @@ describe Ed25519 do
       x = "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
       y = "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
       p = Ed25519::Point.new(x, y)
-      ep = Ed25519::ExtendedPoint.fromAffine(p)
+      ep = Ed25519::ExtendedPoint.from_affine(p)
       f = "276437970844492190593665354523449128878564225569104628".to_big_i
       ep2 = ep.multiply(f, p)
       ep2.x.should eq "22321684185565943538558315764286033780372969712381639797051747678870352647731".to_big_i
@@ -187,14 +187,14 @@ describe Ed25519 do
       ep2.t.should eq "31822727824655136889098960564923067063356144817389259181769889501732264576329".to_big_i
     end
 
-    it "converts toAffine" do
+    it "converts to_affine" do
       x = "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
       y = "52410848636940328811284449235140577725393652610851387856422556910462868432345".to_big_i
       p = Ed25519::Point.new(x, y)
-      ep = Ed25519::ExtendedPoint.fromAffine(p)
+      ep = Ed25519::ExtendedPoint.from_affine(p)
       f = "276437970844492190593665354523449128878564225569104628".to_big_i
       ep2 = ep.multiply(f, p)
-      p2 = ep2.toAffine
+      p2 = ep2.to_affine
       p2.x.should eq "22321684185565943538558315764286033780372969712381639797051747678870352647731".to_big_i
       p2.y.should eq "38655008969693726098878720355832570031914924052594147795829808220614943511493".to_big_i
     end
@@ -204,15 +204,15 @@ describe Ed25519 do
     it "builds from Hex" do
       bytes = Bytes[126, 53, 132, 137, 134, 7, 9, 5, 101, 248, 41, 96, 94, 100, 244, 241, 68, 100, 234, 120, 1, 194, 16, 148, 150, 227, 147, 254, 0, 189, 23, 213, 53, 173, 180, 16, 169, 128, 123, 5, 204, 49, 120, 123, 36, 100, 113, 149, 235, 244, 141, 54, 57, 40, 114, 49, 38, 182, 224, 59, 28, 24, 71, 2]
 
-      Ed25519.ensureBytes(bytes, 64).should eq Bytes[126, 53, 132, 137, 134, 7, 9, 5, 101, 248, 41, 96, 94, 100, 244, 241, 68, 100, 234, 120, 1, 194, 16, 148, 150, 227, 147, 254, 0, 189, 23, 213, 53, 173, 180, 16, 169, 128, 123, 5, 204, 49, 120, 123, 36, 100, 113, 149, 235, 244, 141, 54, 57, 40, 114, 49, 38, 182, 224, 59, 28, 24, 71, 2]
+      Ed25519.ensure_bytes(bytes, 64).should eq Bytes[126, 53, 132, 137, 134, 7, 9, 5, 101, 248, 41, 96, 94, 100, 244, 241, 68, 100, 234, 120, 1, 194, 16, 148, 150, 227, 147, 254, 0, 189, 23, 213, 53, 173, 180, 16, 169, 128, 123, 5, 204, 49, 120, 123, 36, 100, 113, 149, 235, 244, 141, 54, 57, 40, 114, 49, 38, 182, 224, 59, 28, 24, 71, 2]
 
       bytes[0, 32].should eq Bytes[126, 53, 132, 137, 134, 7, 9, 5, 101, 248, 41, 96, 94, 100, 244, 241, 68, 100, 234, 120, 1, 194, 16, 148, 150, 227, 147, 254, 0, 189, 23, 213]
 
-      p = Ed25519::Point.fromHex(bytes[0, 32])
+      p = Ed25519::Point.from_hex(bytes[0, 32])
       p.y.should eq "38488534068937249364295735992136415884264322982189244974287126545192511092094".to_big_i
       p.x.should eq "26513934692395043603859440234860016414416335308392436527957390257926012134861".to_big_i
 
-      signature = Ed25519::Signature.fromHex(bytes)
+      signature = Ed25519::Signature.from_hex(bytes)
       signature.r.x.should eq "26513934692395043603859440234860016414416335308392436527957390257926012134861".to_big_i
       signature.r.y.should eq "38488534068937249364295735992136415884264322982189244974287126545192511092094".to_big_i
       signature.s.should eq "1030238241862493884017068346373435311944855604250319369930294746777369488693".to_big_i
@@ -233,64 +233,64 @@ describe Ed25519 do
         message = random.hex(32)[0, 32].rjust(64, '0').hexbytes
         # rand bigint:
         diff = Ed25519::Curve::N - Ed25519::Two
-        privateKey = (Ed25519::Two + random.rand(diff)).to_s(16).rjust(64, '0').hexbytes
+        private_key = (Ed25519::Two + random.rand(diff)).to_s(16).rjust(64, '0').hexbytes
 
-        publicKey = Ed25519.getPublicKey(privateKey)
-        signature = Ed25519.sign(message, privateKey)
-        publicKey.size.should eq(32)
+        public_key = Ed25519.get_public_key(private_key)
+        signature = Ed25519.sign(message, private_key)
+        public_key.size.should eq(32)
         signature.size.should eq(64)
-        Ed25519.verify(signature, message, publicKey).should be_true
+        Ed25519.verify(signature, message, public_key).should be_true
       end
     end
 
     it "should sign and verify" do
-      publicKey = Ed25519.getPublicKey(PRIVATE_KEY)
+      public_key = Ed25519.get_public_key(PRIVATE_KEY)
       signature = Ed25519.sign(MESSAGE, PRIVATE_KEY)
-      Ed25519.verify(signature, MESSAGE, publicKey).should be_true
+      Ed25519.verify(signature, MESSAGE, public_key).should be_true
     end
 
     it "should not verify signature with wrong public key" do
-      publicKey = Ed25519.getPublicKey(12.to_big_i)
+      public_key = Ed25519.get_public_key(12.to_big_i)
       signature = Ed25519.sign(MESSAGE, PRIVATE_KEY)
-      Ed25519.verify(signature, MESSAGE, publicKey).should be_false
+      Ed25519.verify(signature, MESSAGE, public_key).should be_false
     end
 
     it "should not verify signature with wrong hash" do
-      publicKey = Ed25519.getPublicKey(PRIVATE_KEY)
+      public_key = Ed25519.get_public_key(PRIVATE_KEY)
       signature = Ed25519.sign(MESSAGE, PRIVATE_KEY)
-      Ed25519.verify(signature, WRONG_MESSAGE, publicKey).should be_false
+      Ed25519.verify(signature, WRONG_MESSAGE, public_key).should be_false
     end
 
     it "has correct intermediate values in the implementation" do
-      publicKey : Ed25519::PubKey = Ed25519.getPublicKey(PRIVATE_KEY)
+      public_key : Ed25519::PubKey = Ed25519.get_public_key(PRIVATE_KEY)
       sig : Ed25519::SigType = Ed25519.sign(MESSAGE, PRIVATE_KEY)
 
-      message = Ed25519.ensureBytes(MESSAGE)
+      message = Ed25519.ensure_bytes(MESSAGE)
       # When hex is passed, we check public key fully.
       # When Point instance is passed, we assume it has already been checked, for performance.
       # If user passes Point/Sig instance, we assume it has been already verified.
       # We don't check its equations for performance. We do check for valid bounds for s though
       # We always check for: a) s bounds. b) hex validity
 
-      # if (!(publicKey instanceof Point)) publicKey = Point.fromHex(publicKey, false)
-      point = case publicKey
+      # if (!(public_key instanceof Point)) public_key = Point.from_hex(public_key, false)
+      point = case public_key
               in Ed25519::Hex
-                Ed25519::Point.fromHex(publicKey, false)
+                Ed25519::Point.from_hex(public_key, false)
               in Ed25519::Point
-                publicKey
+                public_key
               end
 
-      # { r, s } = sig instanceof Signature ? sig.assertValidity() : Signature.fromHex(sig)
+      # { r, s } = sig instanceof Signature ? sig.assert_validity() : Signature.from_hex(sig)
       signature = case sig
                   in Ed25519::Signature
-                    sig.assertValidity
+                    sig.assert_validity
                   in Ed25519::Hex
-                    Ed25519::Signature.fromHex(sig)
+                    Ed25519::Signature.from_hex(sig)
                   end
-      sb = Ed25519::ExtendedPoint::BASE.multiplyUnsafe(signature.s)
-      k = Ed25519.sha512ModqLE(signature.r.toRawBytes, point.toRawBytes, message)
-      kA = Ed25519::ExtendedPoint.fromAffine(point).multiplyUnsafe(k)
-      rkA = Ed25519::ExtendedPoint.fromAffine(signature.r).add(kA)
+      sb = Ed25519::ExtendedPoint::BASE.multiply_unsafe(signature.s)
+      k = Ed25519.sha512_modq_le(signature.r.to_raw_bytes, point.to_raw_bytes, message)
+      k_a = Ed25519::ExtendedPoint.from_affine(point).multiply_unsafe(k)
+      rk_a = Ed25519::ExtendedPoint.from_affine(signature.r).add(k_a)
 
       message.should eq Bytes[135, 79, 153, 96, 197, 210, 183, 169, 181, 250, 211, 131, 225, 186, 68, 113, 158, 187, 116, 58]
       point.x.should eq "13663649446542597719550959276437970190593665354523449128466207698868480675936".to_big_i
@@ -303,37 +303,37 @@ describe Ed25519 do
       sb.z.should eq "1".to_big_i
       sb.t.should eq "6006626025786440174029629818678378934986808588828747534556739201674932870865".to_big_i
       k.should eq "1814430438154866636271880811902750784441195987091833047335934192220047792856".to_big_i
-      kA.x.should eq "48024246067080362711680066830877261206448493624890828398561874175851802089745".to_big_i
-      kA.y.should eq "52831917502302850574083450133635930785536484365871120074413267490254610346263".to_big_i
-      kA.z.should eq "22784621637809059626576083971582583127671719532097792236310094947932042321948".to_big_i
-      kA.t.should eq "5729477690831117593843147492573788142992902155283188140971547395390838359670".to_big_i
-      rkA.x.should eq "44772997851978823908305596641152226192884748174736909860521730933856479294204".to_big_i
-      rkA.y.should eq "7808161647464256657139708023348025878175521363979580306482094346987178616005".to_big_i
-      rkA.z.should eq "23471157572058014726220357190102441768621715125713712393537116548882713442849".to_big_i
-      rkA.t.should eq "55608521688890503600733115863660005369712480444448284734270591467996262021613".to_big_i
+      k_a.x.should eq "48024246067080362711680066830877261206448493624890828398561874175851802089745".to_big_i
+      k_a.y.should eq "52831917502302850574083450133635930785536484365871120074413267490254610346263".to_big_i
+      k_a.z.should eq "22784621637809059626576083971582583127671719532097792236310094947932042321948".to_big_i
+      k_a.t.should eq "5729477690831117593843147492573788142992902155283188140971547395390838359670".to_big_i
+      rk_a.x.should eq "44772997851978823908305596641152226192884748174736909860521730933856479294204".to_big_i
+      rk_a.y.should eq "7808161647464256657139708023348025878175521363979580306482094346987178616005".to_big_i
+      rk_a.z.should eq "23471157572058014726220357190102441768621715125713712393537116548882713442849".to_big_i
+      rk_a.t.should eq "55608521688890503600733115863660005369712480444448284734270591467996262021613".to_big_i
     end
   end
 
   describe "BASE_POINT.multiply()" do
     # // https://xmr.llcoins.net/addresstests.html
-    it "should create right publicKey without SHA-512 hashing TEST 1" do
-      publicKey = Ed25519::Point::BASE.multiply(BigInt.new("90af56259a4b6bfbc4337980d5d75fbe3c074630368ff3804d33028e5dbfa77", base: 16))
-      publicKey.toHex.should eq("0f3b913371411b27e646b537e888f685bf929ea7aab93c950ed84433f064480d")
+    it "should create right public_key without SHA-512 hashing TEST 1" do
+      public_key = Ed25519::Point::BASE.multiply(BigInt.new("90af56259a4b6bfbc4337980d5d75fbe3c074630368ff3804d33028e5dbfa77", base: 16))
+      public_key.to_hex.should eq("0f3b913371411b27e646b537e888f685bf929ea7aab93c950ed84433f064480d")
     end
 
-    it "should create right publicKey without SHA-512 hashing TEST 2" do
-      publicKey = Ed25519::Point::BASE.multiply(BigInt.new("364e8711a60780382a5d57b061c126f039940f28a9e91fe039d4d3094d8b88", base: 16))
-      publicKey.toHex.should eq("ad545340b58610f0cd62f17d55af1ab11ecde9c084d5476865ddb4dbda015349")
+    it "should create right public_key without SHA-512 hashing TEST 2" do
+      public_key = Ed25519::Point::BASE.multiply(BigInt.new("364e8711a60780382a5d57b061c126f039940f28a9e91fe039d4d3094d8b88", base: 16))
+      public_key.to_hex.should eq("ad545340b58610f0cd62f17d55af1ab11ecde9c084d5476865ddb4dbda015349")
     end
 
-    it "should create right publicKey without SHA-512 hashing TEST 3" do
-      publicKey = Ed25519::Point::BASE.multiply(BigInt.new("b9bf90ff3abec042752cac3a07a62f0c16cfb9d32a3fc2305d676ec2d86e941", base: 16))
-      publicKey.toHex.should eq("e097c4415fe85724d522b2e449e8fd78dd40d20097bdc9ae36fe8ec6fe12cb8c")
+    it "should create right public_key without SHA-512 hashing TEST 3" do
+      public_key = Ed25519::Point::BASE.multiply(BigInt.new("b9bf90ff3abec042752cac3a07a62f0c16cfb9d32a3fc2305d676ec2d86e941", base: 16))
+      public_key.to_hex.should eq("e097c4415fe85724d522b2e449e8fd78dd40d20097bdc9ae36fe8ec6fe12cb8c")
     end
 
-    it "should create right publicKey without SHA-512 hashing TEST 4" do
-      publicKey = Ed25519::Point::BASE.multiply(BigInt.new("69d896f02d79524c9878e080308180e2859d07f9f54454e0800e8db0847a46e", base: 16))
-      publicKey.toHex.should eq("f12cb7c43b59971395926f278ce7c2eaded9444fbce62ca717564cb508a0db1d")
+    it "should create right public_key without SHA-512 hashing TEST 4" do
+      public_key = Ed25519::Point::BASE.multiply(BigInt.new("69d896f02d79524c9878e080308180e2859d07f9f54454e0800e8db0847a46e", base: 16))
+      public_key.to_hex.should eq("f12cb7c43b59971395926f278ce7c2eaded9444fbce62ca717564cb508a0db1d")
     end
 
     it "should raise on invalid input" do
@@ -345,21 +345,21 @@ describe Ed25519 do
     end
   end
 
-  describe "getSharedSecret" do
-    it "should convert base point to montgomery using toX25519" do
-      point = Ed25519::Point::BASE.toX25519.hexstring
+  describe "get_shared_secret" do
+    it "should convert base point to montgomery using to_x25519" do
+      point = Ed25519::Point::BASE.to_x25519.hexstring
       point = "0#{point}" if point.size.odd?
       point.should eq(Ed25519::Curve25519::BASE_POINT_U)
     end
 
     it "should be commutative" do
       512.times do
-        asec = Ed25519::Utils.randomPrivateKey
-        apub = Ed25519.getPublicKey(asec)
-        bsec = Ed25519::Utils.randomPrivateKey
-        bpub = Ed25519.getPublicKey(bsec)
+        asec = Ed25519::Utils.random_private_key
+        apub = Ed25519.get_public_key(asec)
+        bsec = Ed25519::Utils.random_private_key
+        bpub = Ed25519.get_public_key(bsec)
         begin
-          Ed25519.getSharedSecret(asec, bpub).should eq Ed25519.getSharedSecret(bsec, apub)
+          Ed25519.get_shared_secret(asec, bpub).should eq Ed25519.get_shared_secret(bsec, apub)
         rescue err
           raise "not commutative: #{err}: #{asec}, #{apub}, #{bsec}, #{bpub}"
         end
