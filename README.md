@@ -84,3 +84,4 @@ verify_key  = Ed25519::VerifyKey.new(verify_key_bytes.hexbytes)
 
 The original crystal port was done by [davidkellis](https://github.com/davidkellis/noble-ed25519-cr)
 based on the javascript implementation by [paulmillr](https://github.com/paulmillr/noble-ed25519)
+Interface copied from the Ruby implementation by [tarcieri](https://github.com/RubyCrypto/ed25519)
