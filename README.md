@@ -1,4 +1,4 @@
-# ed25519
+# ed25519 [![CI](https://github.com/spider-gazelle/ed25519/actions/workflows/ci.yml/badge.svg)](https://github.com/spider-gazelle/ed25519/actions/workflows/ci.yml)
 
 A crystal lang implementation of the Ed25519 elliptic curve public-key signature system
 described in [RFC 8032].
