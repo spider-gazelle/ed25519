@@ -37,7 +37,6 @@ digital signature algorithms:
 You can read more on [Dan Bernstein's Ed25519 site](http://ed25519.cr.yp.to/).
 
 [Schnorr signature]: https://en.wikipedia.org/wiki/Schnorr_signature
-[ycombinator discussion](http://news.ycombinator.com/item?id=3067434)
 
 ## Usage
 
