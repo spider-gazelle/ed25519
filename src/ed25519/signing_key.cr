@@ -7,6 +7,10 @@ class Ed25519::SigningKey
   getter key_bytes : Bytes
   getter verify_key : VerifyKey { VerifyKey.new(Ed25519.get_public_key(@key_bytes)) }
 
+  def to_slice
+    @key_bytes
+  end
+
   def key_size
     @key_bytes.size
   end

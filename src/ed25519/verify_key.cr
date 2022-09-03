@@ -10,6 +10,10 @@ class Ed25519::VerifyKey
 
   getter key_bytes : Bytes
 
+  def to_slice
+    @key_bytes
+  end
+
   def verify(signature : Bytes, message : Bytes | String) : Bool
     bytes = message.to_slice
     Ed25519.verify(signature, bytes, @key_bytes)
