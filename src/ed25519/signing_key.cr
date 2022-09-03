@@ -1,7 +1,13 @@
 require "./verify_key"
 
 class Ed25519::SigningKey
-  def initialize(@key_bytes : Bytes = Random::Secure.hex(32).hexbytes)
+  def initialize(key_bytes : Bytes = Random::Secure.hex(32).hexbytes)
+    if key_bytes.size == 64
+      # assume this key is from libsodium or similar, where the private key includes the public key
+      @key_bytes = key_bytes[0..31]
+    else
+      @key_bytes = key_bytes
+    end
   end
 
   getter key_bytes : Bytes
