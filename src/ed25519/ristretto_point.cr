@@ -100,7 +100,7 @@ class Ed25519::RistrettoPoint
     d2 = Ed25519.mod(invsqrt * u2)   # 5
     z_inv = Ed25519.mod(d1 * d2 * t) # 6
     d : BigInt = BigInt.new(0)       # 7
-    if (ed_is_negative(t * z_inv))
+    if ed_is_negative(t * z_inv)
       _x = Ed25519.mod(y * SQRT_M1)
       _y = Ed25519.mod(x * SQRT_M1)
       x = _x

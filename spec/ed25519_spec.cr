@@ -360,8 +360,8 @@ describe Ed25519 do
         bpub = Ed25519.get_public_key(bsec)
         begin
           Ed25519.get_shared_secret(asec, bpub).should eq Ed25519.get_shared_secret(bsec, apub)
-        rescue err
-          raise "not commutative: #{err}: #{asec}, #{apub}, #{bsec}, #{bpub}"
+        rescue ex
+          raise "not commutative: #{ex}: #{asec}, #{apub}, #{bsec}, #{bpub}"
         end
       end
     end

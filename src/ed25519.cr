@@ -42,7 +42,7 @@ module Ed25519
     if arrays.size == 1
       arrays[0]
     else
-      length = arrays.reduce(0) { |a, arr| a + arr.size }
+      length = arrays.reduce(0) { |acc, arr| acc + arr.size }
       io = IO::Memory.new(length)
       arrays.each { |arr| io.write(arr) }
       io.to_slice

@@ -18,11 +18,11 @@ class Ed25519::ExtendedPoint
   # so this improves performance massively.
   def self.to_affine_batch(points : Array(ExtendedPoint)) : Array(Point)
     to_inv = Ed25519.invert_batch(points.map(&.z))
-    points.map_with_index { |p, i| p.to_affine(to_inv[i]) }
+    points.map_with_index { |point, index| point.to_affine(to_inv[index]) }
   end
 
   def self.normalize_z(points : Array(ExtendedPoint)) : Array(ExtendedPoint)
-    self.to_affine_batch(points).map { |p| from_affine(p) }
+    self.to_affine_batch(points).map { |point| from_affine(point) }
   end
 
   property x : BigInt
@@ -224,11 +224,11 @@ class Ed25519::ExtendedPoint
     end
   end
 
-  def is_small_order : Bool
+  def small_order? : Bool
     self.multiply_unsafe(Curve::H).equals(ExtendedPoint::ZERO)
   end
 
-  def is_torsion_free : Bool
+  def torsion_free? : Bool
     self.multiply_unsafe(Curve::L).equals(ExtendedPoint::ZERO)
   end
 

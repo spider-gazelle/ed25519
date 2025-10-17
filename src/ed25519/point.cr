@@ -113,8 +113,8 @@ module Ed25519
       Ed25519.number_to_32_bytes_le(u)
     end
 
-    def is_torsion_free : Bool
-      ExtendedPoint.from_affine(self).is_torsion_free
+    def torsion_free? : Bool
+      ExtendedPoint.from_affine(self).torsion_free?
     end
 
     def equals(other : Point) : Bool
